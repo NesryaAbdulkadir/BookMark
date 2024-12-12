@@ -4,12 +4,23 @@ import { Link } from "react-router-dom";
 import { slugify } from "../../helpers/Slugify";
 import { EllipsisVertical, X, XCircle, XCircleIcon } from "lucide-react";
 
-export default function CollectionItems({ collections }) {
-  const { colorPallet, setShowEditor, handleDeleteCollection } =
-    useContext(markContext);
+export default function CollectionItems({ collections, setValue, value }) {
+  const {
+    colorPallet,
+    setShowEditor,
+    handleDeleteCollection,
+    editIndex,
+    setEditIndex,
+  } = useContext(markContext);
   const [showMenu, setShowMenu] = useState(null);
-  function handleEdit(index) {
+  function handleEdit(name, description, id) {
     setShowEditor(true);
+    setValue({
+      collectionName: name,
+      collectionDescription: description,
+    });
+    setEditIndex(id);
+    setShowMenu(null);
   }
   function handleDelete(id) {
     setShowMenu(null);
@@ -22,9 +33,8 @@ export default function CollectionItems({ collections }) {
           key={collection.id}
           className="flex flex-col items-center gap-2 relative"
         >
-          index: {index + 1}
-          {"                  "}
-          id: {collection.id}
+          name: {collection.name}
+          description: {collection.description}
           <div className="flex justify-between w-full p-2">
             <Link to={`/collections/${slugify(collection.name)}/urls`}>
               <p className="text-xl">{collection.name}</p>
@@ -46,7 +56,17 @@ export default function CollectionItems({ collections }) {
           ></Link>
           {showMenu === index && (
             <div className=" top-0 right-10 absolute bg-gray-800 rounded-lg p-10 flex flex-col gap-5 text-center text-xl">
-              <button onClick={() => handleEdit(index)}>Edit</button>
+              <button
+                onClick={() =>
+                  handleEdit(
+                    collection.name,
+                    collection.description,
+                    collection.id
+                  )
+                }
+              >
+                Edit
+              </button>
               <button onClick={() => handleDelete(collection.id)}>
                 Delete
               </button>

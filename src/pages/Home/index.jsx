@@ -7,22 +7,49 @@ const initialValue = {
   collectionDescription: "",
 };
 export default function Home() {
-  const { showEditor, setShowEditor, collections, setCollections } =
-    useContext(markContext);
+  const {
+    showEditor,
+    setShowEditor,
+    collections,
+    setCollections,
+    handleAddCollection,
+    handleEditCollection,
+
+    editIndex,
+    setEditIndex,
+  } = useContext(markContext);
 
   const [value, setValue] = useState(initialValue);
   function handleSubmit(e) {
     e.preventDefault();
+    const collection = collections.find(
+      (collection) => collection.id === editIndex
+    );
+    if (collection) {
+      handleEditCollection(
+        collection.name,
+        value.collectionName,
+        value.collectionDescription
+      );
+      console.log("saved");
+    }
 
-    setCollections([
-      ...collections,
-      {
-        id: collections.length + 1,
-        name: value.collectionName,
-        description: value.collectionDescription,
-        items: [],
-      },
-    ]);
+    handleAddCollection(
+      value.collectionName,
+      value.collectionDescription,
+      "",
+      ""
+    );
+
+    // setCollections([
+    //   ...collections,
+    //   {
+    //     id: collections.length + 1,
+    //     name: value.collectionName,
+    //     description: value.collectionDescription,
+    //     items: [],
+    //   },
+    // ]);
     setValue(initialValue);
     setShowEditor(false);
   }
@@ -31,7 +58,7 @@ export default function Home() {
   }
   return (
     <div>
-      <Collection />
+      <Collection setValue={setValue} value={value} />
       {showEditor && (
         <Editor
           handleSubmit={handleSubmit}

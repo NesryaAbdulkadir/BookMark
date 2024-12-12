@@ -10,8 +10,13 @@ const initialValue = {
   BookMarkName: "",
 };
 export default function CollectionUrls() {
-  const { showEditor, setShowEditor, collections, setCollections } =
-    useContext(markContext);
+  const {
+    showEditor,
+    setShowEditor,
+    collections,
+    setCollections,
+    handleAddCollection,
+  } = useContext(markContext);
   const { slug } = useParams();
   const collection = collections.find(
     (collection) => slugify(collection.name) === slug
@@ -20,23 +25,29 @@ export default function CollectionUrls() {
   const [value, setValue] = useState(initialValue);
   function handleSubmit(e) {
     e.preventDefault();
-
-    setCollections((prevCollection) =>
-      prevCollection.map((singleCollection) =>
-        singleCollection.name === collection.name
-          ? {
-              ...singleCollection,
-              items: [
-                ...singleCollection.items,
-                {
-                  url: value.bookMarkUrl,
-                  name: value.BookMarkName,
-                },
-              ],
-            }
-          : singleCollection
-      )
+    handleAddCollection(
+      collection.name,
+      collection.description,
+      value.bookMarkUrl,
+      value.BookMarkName
     );
+
+    // setCollections((prevCollection) =>
+    //   prevCollection.map((singleCollection) =>
+    //     singleCollection.name === collection.name
+    //       ? {
+    //           ...singleCollection,
+    //           items: [
+    //             ...singleCollection.items,
+    //             {
+    //               url: value.bookMarkUrl,
+    //               name: value.BookMarkName,
+    //             },
+    //           ],
+    //         }
+    //       : singleCollection
+    //   )
+    // );
 
     setValue(initialValue);
     setShowEditor(false);
@@ -48,7 +59,7 @@ export default function CollectionUrls() {
 
   return (
     <div>
-      <BookMarks />
+      <BookMarks setValue={setValue} value={value} />
       {showEditor && (
         <Editor
           handleSubmit={handleSubmit}

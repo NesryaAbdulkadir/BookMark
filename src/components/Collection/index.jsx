@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import CollectionItems from "../CollectionItems";
 import { markContext } from "../../Context";
 
-export default function Collection() {
+export default function Collection({ setValue, value }) {
   const { collections, setShowEditor } = useContext(markContext);
 
   return (
@@ -24,7 +24,11 @@ export default function Collection() {
           No BookMarks Found
         </h1>
       ) : (
-        <CollectionItems collections={collections} />
+        <CollectionItems
+          collections={collections}
+          setValue={setValue}
+          value={value}
+        />
       )}
     </div>
   );

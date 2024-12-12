@@ -4,7 +4,7 @@ import BookMarkItems from "../BookMarkItems";
 import { Link, useParams } from "react-router-dom";
 import { slugify } from "../../helpers/Slugify";
 
-export default function BookMarks() {
+export default function BookMarks({ setValue, value }) {
   const { setShowEditor, collections } = useContext(markContext);
   const { slug } = useParams();
   const collection = collections.find(
@@ -34,7 +34,7 @@ export default function BookMarks() {
           No BookMarks Found
         </h1>
       ) : (
-        <BookMarkItems />
+        <BookMarkItems setValue={setValue} value={value} />
       )}
     </div>
   );

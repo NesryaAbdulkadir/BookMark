@@ -3,7 +3,7 @@ import { markContext } from "../../Context";
 import { Link, useParams } from "react-router-dom";
 import { slugify } from "../../helpers/Slugify";
 
-export default function BookMarkItems() {
+export default function BookMarkItems({ setValue, value }) {
   const {
     showEditor,
     setShowEditor,

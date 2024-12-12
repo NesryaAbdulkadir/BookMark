@@ -42,12 +42,74 @@ function MarkProvider({ children }) {
     "bg-red-300",
     "bg-orange-300",
   ];
+  const [editIndex, setEditIndex] = useState(null);
+
+  function handleAddCollection(name, description, url, urlName) {
+    const existingCollection = collections.find(
+      (collection) => collection.name === name
+    );
+
+    if (existingCollection) {
+      // If the collection exists, add the URL to its items
+      setCollections((prevCollections) =>
+        prevCollections.map((singleCollection) =>
+          singleCollection.name === name
+            ? {
+                ...singleCollection,
+                items: [
+                  ...singleCollection.items,
+                  {
+                    url, // Use the provided url parameter
+                    name: urlName, // Use the provided urlName parameter
+                  },
+                ],
+              }
+            : singleCollection
+        )
+      );
+    } else {
+      // If the collection does not exist, create a new collection
+      const newCollection = {
+        id: collections.length + 1, // Consider using a more reliable ID generation method
+        name,
+        description,
+        items: [],
+      };
+
+      setCollections((prevCollections) => [...prevCollections, newCollection]);
+    }
+  }
 
   function handleDeleteCollection(collectionId) {
     const newCollections = collections.filter(
       (collection) => collection.id !== collectionId
     );
     setCollections(newCollections);
+  }
+
+  function handleEditCollection(oldName, newName, newDescription) {
+    setCollections((prevCollections) =>
+      prevCollections.map((collection) =>
+        collection.name === oldName
+          ? { ...collection, name: newName, description: newDescription }
+          : collection
+      )
+    );
+  }
+
+  function handleEditBookmark(collectionName, oldUrl, newUrl, newName) {
+    setCollections((prevCollections) =>
+      prevCollections.map((collection) =>
+        collection.name === collectionName
+          ? {
+              ...collection,
+              items: collection.items.map((item) =>
+                item.url === oldUrl ? { url: newUrl, name: newName } : item
+              ),
+            }
+          : collection
+      )
+    );
   }
 
   const [showEditor, setShowEditor] = useState(false);
@@ -60,6 +122,10 @@ function MarkProvider({ children }) {
     setShowEditor,
     handleAddCollection,
     handleDeleteCollection,
+    handleEditCollection,
+    handleEditBookmark,
+    editIndex,
+    setEditIndex,
   };
   return <markContext.Provider value={value}>{children}</markContext.Provider>;
 }
