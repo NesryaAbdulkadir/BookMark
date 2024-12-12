@@ -1,25 +1,58 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { markContext } from "../../Context";
 import { Link } from "react-router-dom";
 import { slugify } from "../../helpers/Slugify";
+import { EllipsisVertical, X, XCircle, XCircleIcon } from "lucide-react";
 
 export default function CollectionItems({ collections }) {
-  const { colorPallet } = useContext(markContext);
+  const { colorPallet, setShowEditor, handleDeleteCollection } =
+    useContext(markContext);
+  const [showMenu, setShowMenu] = useState(null);
+  function handleEdit(index) {
+    setShowEditor(true);
+  }
+  function handleDelete(id) {
+    setShowMenu(null);
+    handleDeleteCollection(id);
+  }
   return (
-    <div className="justify-center items-start gap-14 pt-10 grid xl:grid-cols-6  lg:grid-cols-4 sm:grid-cols-2 grid-cols-1">
+    <div className="justify-center items-start gap-14 pt-10 grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1">
       {collections.map((collection, index) => (
-        <Link
-          to={`/collections/${slugify(collection.name)}/urls`}
+        <div
           key={collection.id}
-          className="flex flex-col items-center gap-3"
+          className="flex flex-col items-center gap-2 relative"
         >
-          <div
-            className={`w-full h-20 rounded-lg ${
+          index: {index + 1}
+          {"                  "}
+          id: {collection.id}
+          <div className="flex justify-between w-full p-2">
+            <Link to={`/collections/${slugify(collection.name)}/urls`}>
+              <p className="text-xl">{collection.name}</p>
+            </Link>
+            {showMenu === index ? (
+              <X className="cursor-pointer" onClick={() => setShowMenu(null)} />
+            ) : (
+              <EllipsisVertical
+                className="cursor-pointer"
+                onClick={() => setShowMenu(index)}
+              />
+            )}
+          </div>
+          <Link
+            to={`/collections/${slugify(collection.name)}/urls`}
+            className={`w-full h-10 rounded-lg ${
               colorPallet[index % colorPallet.length]
             } m-2`}
-          ></div>
-          <p className="text-xl">{collection.name}</p>
-        </Link>
+          ></Link>
+          {showMenu === index && (
+            <div className=" top-0 right-10 absolute bg-gray-800 rounded-lg p-10 flex flex-col gap-5 text-center text-xl">
+              <button onClick={() => handleEdit(index)}>Edit</button>
+              <button onClick={() => handleDelete(collection.id)}>
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
       ))}
     </div>
   );

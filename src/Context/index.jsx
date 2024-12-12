@@ -43,6 +43,13 @@ function MarkProvider({ children }) {
     "bg-orange-300",
   ];
 
+  function handleDeleteCollection(collectionId) {
+    const newCollections = collections.filter(
+      (collection) => collection.id !== collectionId
+    );
+    setCollections(newCollections);
+  }
+
   const [showEditor, setShowEditor] = useState(false);
 
   const value = {
@@ -51,6 +58,8 @@ function MarkProvider({ children }) {
     colorPallet,
     showEditor,
     setShowEditor,
+    handleAddCollection,
+    handleDeleteCollection,
   };
   return <markContext.Provider value={value}>{children}</markContext.Provider>;
 }
