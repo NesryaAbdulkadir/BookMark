@@ -26,6 +26,7 @@ export default function CollectionItems({ collections, setValue, value }) {
     setShowMenu(null);
     handleDeleteCollection(id);
   }
+
   return (
     <div className="justify-center items-start gap-14 pt-10 grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1">
       {collections.map((collection, index) => (

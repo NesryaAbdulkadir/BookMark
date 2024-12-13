@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useLocalStorage from "../Hooks/useLocalStorage";
+import { v4 as uuidv4 } from "uuid";
 
 const markContext = createContext();
 
@@ -70,7 +71,7 @@ function MarkProvider({ children }) {
     } else {
       // If the collection does not exist, create a new collection
       const newCollection = {
-        id: collections.length + 1, // Consider using a more reliable ID generation method
+        id: uuidv4(), // Consider using a more reliable ID generation method
         name,
         description,
         items: [],
@@ -87,10 +88,10 @@ function MarkProvider({ children }) {
     setCollections(newCollections);
   }
 
-  function handleEditCollection(oldName, newName, newDescription) {
+  function handleEditCollection(id, newName, newDescription) {
     setCollections((prevCollections) =>
       prevCollections.map((collection) =>
-        collection.name === oldName
+        collection.id === id
           ? { ...collection, name: newName, description: newDescription }
           : collection
       )

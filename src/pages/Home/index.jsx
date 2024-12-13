@@ -11,45 +11,34 @@ export default function Home() {
     showEditor,
     setShowEditor,
     collections,
-    setCollections,
     handleAddCollection,
     handleEditCollection,
 
     editIndex,
-    setEditIndex,
   } = useContext(markContext);
 
   const [value, setValue] = useState(initialValue);
   function handleSubmit(e) {
     e.preventDefault();
+
     const collection = collections.find(
       (collection) => collection.id === editIndex
     );
+
     if (collection) {
       handleEditCollection(
-        collection.name,
+        collection.id,
         value.collectionName,
         value.collectionDescription
       );
-      console.log("saved");
+    } else {
+      handleAddCollection(
+        value.collectionName,
+        value.collectionDescription,
+        []
+      );
     }
 
-    handleAddCollection(
-      value.collectionName,
-      value.collectionDescription,
-      "",
-      ""
-    );
-
-    // setCollections([
-    //   ...collections,
-    //   {
-    //     id: collections.length + 1,
-    //     name: value.collectionName,
-    //     description: value.collectionDescription,
-    //     items: [],
-    //   },
-    // ]);
     setValue(initialValue);
     setShowEditor(false);
   }
