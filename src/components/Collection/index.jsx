@@ -19,9 +19,9 @@ export default function Collection({ setValue, value }) {
         </span>
       </div>
 
-      {collections?.length === 0 ? (
+      {collections?.length === null ? (
         <h1 className="text-3xl sm:text-5xl  font-bold text-center text-blue-950 mt-20">
-          No BookMarks Found
+          No Collections Found
         </h1>
       ) : (
         <CollectionItems

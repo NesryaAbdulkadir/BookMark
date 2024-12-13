@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 const markContext = createContext();
 
 const initialValue = {
-  id: 0,
+  id: null,
   name: "",
   description: "",
   items: [],
@@ -45,13 +45,12 @@ function MarkProvider({ children }) {
   ];
   const [editIndex, setEditIndex] = useState(null);
 
-  function handleAddCollection(name, description, url, urlName) {
+  function handleAdd(name, description, url, urlName) {
     const existingCollection = collections.find(
       (collection) => collection.name === name
     );
 
     if (existingCollection) {
-      // If the collection exists, add the URL to its items
       setCollections((prevCollections) =>
         prevCollections.map((singleCollection) =>
           singleCollection.name === name
@@ -60,8 +59,8 @@ function MarkProvider({ children }) {
                 items: [
                   ...singleCollection.items,
                   {
-                    url, // Use the provided url parameter
-                    name: urlName, // Use the provided urlName parameter
+                    url,
+                    name: urlName,
                   },
                 ],
               }
@@ -69,9 +68,8 @@ function MarkProvider({ children }) {
         )
       );
     } else {
-      // If the collection does not exist, create a new collection
       const newCollection = {
-        id: uuidv4(), // Consider using a more reliable ID generation method
+        id: uuidv4(),
         name,
         description,
         items: [],
@@ -81,11 +79,23 @@ function MarkProvider({ children }) {
     }
   }
 
-  function handleDeleteCollection(collectionId) {
-    const newCollections = collections.filter(
-      (collection) => collection.id !== collectionId
-    );
-    setCollections(newCollections);
+  function handleDeleteCollection(collectionId, bookmarkName) {
+    if (bookmarkName) {
+      const newCollections = collections.map((collection) => {
+        if (collection.id === collectionId) {
+          return {
+            ...collection,
+            items: collection.items.filter(
+              (item) => item.name !== bookmarkName
+            ),
+          };
+        }
+        return collection;
+      });
+      console.log(newCollections);
+
+      setCollections(newCollections);
+    }
   }
 
   function handleEditCollection(id, newName, newDescription) {
@@ -98,20 +108,35 @@ function MarkProvider({ children }) {
     );
   }
 
-  function handleEditBookmark(collectionName, oldUrl, newUrl, newName) {
-    setCollections((prevCollections) =>
-      prevCollections.map((collection) =>
-        collection.name === collectionName
-          ? {
-              ...collection,
-              items: collection.items.map((item) =>
-                item.url === oldUrl ? { url: newUrl, name: newName } : item
-              ),
-            }
-          : collection
-      )
-    );
+  function handleEditBookmark(collectionId, url, name) {
+    if (url) {
+      const newCollections = collections.map((collection) => {
+        if (collection.id === collectionId) {
+          return {
+            ...collection,
+            items: collection.items.filter((item) => item.name !== url),
+          };
+        }
+        return collection;
+      });
+      setCollections(newCollections);
+    }
   }
+
+  // (collectionName, oldUrl, newUrl, newName) {
+  //   setCollections((prevCollections) =>
+  //     prevCollections.map((collection) =>
+  //       collection.name === collectionName
+  //         ? {
+  //             ...collection,
+  //             items: collection.items.map((item) =>
+  //               item.url === oldUrl ? { url: newUrl, name: newName } : item
+  //             ),
+  //           }
+  //         : collection
+  //     )
+  //   );
+  // }
 
   const [showEditor, setShowEditor] = useState(false);
 
@@ -121,7 +146,7 @@ function MarkProvider({ children }) {
     colorPallet,
     showEditor,
     setShowEditor,
-    handleAddCollection,
+    handleAddCollection: handleAdd,
     handleDeleteCollection,
     handleEditCollection,
     handleEditBookmark,

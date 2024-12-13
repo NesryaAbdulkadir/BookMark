@@ -26,7 +26,7 @@ export default function Editor({
           type={type || "text"}
           placeholder={placeholder[0]}
           name={nameOfInput1}
-          value={value.collectionName}
+          value={value.collectionName || value.bookMarkUrl}
           onChange={(e) => handleChange(e)}
           className="w-full p-3 bg-gray-900 outline-none text-xl rounded-md"
         />
@@ -34,7 +34,7 @@ export default function Editor({
           placeholder={placeholder[1]}
           name={nameOfInput2}
           className="w-full p-3 bg-gray-900 outline-none text-xl rounded-md h-full"
-          value={value.collectionDescription}
+          value={value.collectionDescription || value.bookMarkName}
           onChange={(e) => handleChange(e)}
         />
         <button

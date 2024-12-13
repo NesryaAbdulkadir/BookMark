@@ -2,10 +2,12 @@ import { useContext, useState } from "react";
 import Collection from "../../components/Collection";
 import Editor from "../../components/Editor";
 import { markContext } from "../../Context";
+
 const initialValue = {
   collectionName: "",
   collectionDescription: "",
 };
+
 export default function Home() {
   const {
     showEditor,
@@ -13,11 +15,11 @@ export default function Home() {
     collections,
     handleAddCollection,
     handleEditCollection,
-
     editIndex,
   } = useContext(markContext);
 
   const [value, setValue] = useState(initialValue);
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -39,12 +41,14 @@ export default function Home() {
       );
     }
 
-    setValue(initialValue);
+    setValue(initialValue); // Reset to initial value
     setShowEditor(false);
   }
+
   function handleChange(e) {
     setValue({ ...value, [e.target.name]: e.target.value });
   }
+
   return (
     <div>
       <Collection setValue={setValue} value={value} />

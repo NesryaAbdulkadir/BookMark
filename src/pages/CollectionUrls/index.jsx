@@ -7,7 +7,7 @@ import { slugify } from "../../helpers/Slugify";
 
 const initialValue = {
   bookMarkUrl: "",
-  BookMarkName: "",
+  bookMarkName: "",
 };
 export default function CollectionUrls() {
   const {
@@ -16,6 +16,7 @@ export default function CollectionUrls() {
     collections,
     setCollections,
     handleAddCollection,
+    handleEditBookmark,
   } = useContext(markContext);
   const { slug } = useParams();
   const collection = collections.find(
@@ -25,12 +26,21 @@ export default function CollectionUrls() {
   const [value, setValue] = useState(initialValue);
   function handleSubmit(e) {
     e.preventDefault();
-    handleAddCollection(
-      collection.name,
-      collection.description,
-      value.bookMarkUrl,
-      value.BookMarkName
+    const existingBookMark = collection.items.find(
+      (item) => item.name === value.bookMarkName
     );
+    console.log(existingBookMark);
+
+    if (existingBookMark) {
+      handleEditBookmark(collection.id, value.bookMarkUrl, value.bookMarkName);
+    } else {
+      handleAddCollection(
+        collection.name,
+        collection.description,
+        value.bookMarkUrl,
+        value.bookMarkName
+      );
+    }
 
     // setCollections((prevCollection) =>
     //   prevCollection.map((singleCollection) =>
@@ -67,7 +77,7 @@ export default function CollectionUrls() {
           setValue={setValue}
           handleChange={handleChange}
           nameOfInput1={"bookMarkUrl"}
-          nameOfInput2={"BookMarkName"}
+          nameOfInput2={"bookMarkName"}
           type={"url"}
           placeholder={["Enter Url", "Enter BookMark Name"]}
         />
